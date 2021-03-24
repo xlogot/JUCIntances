@@ -1,0 +1,32 @@
+package chapter06;
+
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.currentThread;
+
+public class ThreadGroupEnumerateThrads {
+    public static void main(String[] args) throws InterruptedException {
+        ThreadGroup myGroup=new ThreadGroup("MyGroup");
+
+        Thread thread=new Thread(myGroup,()->{
+            while (true){
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        },"MyThread");
+        thread.start();
+
+        TimeUnit.MILLISECONDS.sleep(2);
+        ThreadGroup mainGroup=currentThread().getThreadGroup();
+
+        Thread[] list=new Thread[mainGroup.activeCount()];
+        int recurseSize=mainGroup.enumerate(list);
+        System.out.println(recurseSize);
+
+        recurseSize=mainGroup.enumerate(list,false);
+        System.out.println(recurseSize);
+    }
+}
